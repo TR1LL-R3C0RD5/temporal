@@ -30,7 +30,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
+	"math"
 	schedulepb "go.temporal.io/api/schedule/v1"
 	"go.temporal.io/server/common/primitives/timestamp"
 	"google.golang.org/protobuf/types/known/durationpb"
@@ -444,6 +444,9 @@ func makeRange(s, field, def string, minVal, maxVal int, parseMode parseMode) ([
 			}
 			if step < 1 {
 				return nil, fmt.Errorf("%s has invalid Step", field)
+			}
+			if step > math.MaxInt32 {
+				return nil, fmt.Errorf("%s Step is too large (max %d)", field, math.MaxInt32)
 			}
 			hasStep = true
 		}
